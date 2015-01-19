@@ -1,7 +1,11 @@
 var res = {
-    HelloWorld_png : "res/HelloWorld.png",
-    CloseNormal_png : "res/CloseNormal.png",
-    CloseSelected_png : "res/CloseSelected.png"
+    home_jpg : "res/home.jpg",
+    bg_jpg : "res/bg.jpg",
+    barFrame_png :"res/barFrame.png",
+    urineBar_jpg : "res/urineBar.png",
+    restartButton_png : "res/restartButton.png",
+    shareButton_png : "res/shareButton.png",
+    right_png : "res/right.png"
 };
 
 var g_resources = [];

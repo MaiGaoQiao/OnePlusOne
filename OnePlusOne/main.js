@@ -49,11 +49,29 @@
 
 cc.game.onStart = function(){
     cc.view.adjustViewPort(true);
-    cc.view.setDesignResolutionSize(800, 450, cc.ResolutionPolicy.SHOW_ALL);
+    var size = cc.view.getFrameSize();
+    var rate = size.height/size.width;
+
+
+    cc.log("frame:"+size.width,size.height);//640,1024
+    if (cc.sys.isMobile){
+        if(rate > 1.7 && rate < 1.8){//1.78,iphone6,iphone5
+            cc.view.setDesignResolutionSize(580, 1024, cc.ResolutionPolicy.SHOW_ALL);//EXACT_FIT//SHOW_ALL
+        }else if(rate == 1.5){//1.5,iphone4
+            cc.view.setDesignResolutionSize(640, 960, cc.ResolutionPolicy.SHOW_ALL);//EXACT_FIT//SHOW_ALL
+        }
+        else{
+            cc.view.setDesignResolutionSize(640, 1024, cc.ResolutionPolicy.SHOW_ALL);//EXACT_FIT//SHOW_ALL
+        }
+
+    }
+    else
+        cc.view.setDesignResolutionSize(640, 1024, cc.ResolutionPolicy.SHOW_ALL);
+
     cc.view.resizeWithBrowserSize(true);
     //load resources
-    cc.LoaderScene.preload(g_resources, function () {
-        cc.director.runScene(new HelloWorldScene());
+    MyLoaderScene.preload(g_resources, function () {
+        cc.director.runScene(new IntroScene0());
     }, this);
 };
 cc.game.run();
