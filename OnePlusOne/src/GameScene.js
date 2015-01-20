@@ -41,14 +41,15 @@ var GameSceneLayer = cc.Layer.extend({
 
         this.answerSprites = new Array();
 
-        var bgLayer = new cc.LayerColor();
-        bgLayer.init(cc.color(0xFF,0xFF,0xFF,0xff),size.width,size.height);
-        this.addChild(bgLayer);
+
+        this.gameLayer = new cc.LayerColor();
+        this.gameLayer.init(cc.color(0xFF,0xFF,0xFF,0xff),size.width*2,size.height);
+        this.addChild(this.gameLayer);
 
         var bg = new cc.Sprite(res.levelTipBg_png);//bg1_jpg
         bg.x = 85;
         bg.y = size.height-118/2;
-        this.addChild(bg);
+        this.gameLayer.addChild(bg);
 
 
         this.levelTipLabel = new cc.LabelTTF("0", "Arial", 60);
@@ -57,7 +58,7 @@ var GameSceneLayer = cc.Layer.extend({
         this.levelTipLabel.y = bg.y;
         this.levelTipLabel.color = cc.color(0x4d,0x4d,0x4d);
         // add the label as a child to this layer
-        this.addChild(this.levelTipLabel, 5);
+        this.gameLayer.addChild(this.levelTipLabel, 5);
 
         this.questionLabel = new cc.LabelTTF("1 + 2 = ", "Arial", 60);
         // position the label on the center of the screen
@@ -65,7 +66,7 @@ var GameSceneLayer = cc.Layer.extend({
         this.questionLabel.y = size.height / 2+40;
         this.questionLabel.color = cc.color(0x00,0xa9,0xef);
         // add the label as a child to this layer
-        this.addChild(this.questionLabel, 5);
+        this.gameLayer.addChild(this.questionLabel, 5);
 
 
         this.answerLabel = new cc.LabelTTF("?", "Arial", 60);
@@ -74,12 +75,12 @@ var GameSceneLayer = cc.Layer.extend({
         this.answerLabel.y = this.questionLabel.y;
         this.answerLabel.color = cc.color(0x00,0xa9,0xef);
         // add the label as a child to this layer
-        this.addChild(this.answerLabel, 5);
+        this.gameLayer.addChild(this.answerLabel, 5);
 
         this.rightSprite = new cc.Sprite(res.right_png);
         this.rightSprite.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
         this.rightSprite.y = this.questionLabel.y;
-        this.addChild(this.rightSprite, 5);
+        this.gameLayer.addChild(this.rightSprite, 5);
         this.rightSprite.setVisible(false);
 
         var answerSprite1 = new AnswerSprite(1);
@@ -94,10 +95,47 @@ var GameSceneLayer = cc.Layer.extend({
         answerSprite3.x = size.width/2;
         answerSprite3.y = 80;
 
-        this.addChild(answerSprite1, 5);
-        this.addChild(answerSprite2, 5);
-        this.addChild(answerSprite3, 5);
+        this.gameLayer.addChild(answerSprite1, 5);
+        this.gameLayer.addChild(answerSprite2, 5);
+        this.gameLayer.addChild(answerSprite3, 5);
         this.answerSprites.push(answerSprite1,answerSprite2,answerSprite3);
+
+
+        var sprite = new cc.Sprite(res.pauseBt_png);
+        var sprite1 = new cc.Sprite(res.pauseBt_png);
+        sprite1.setScale(1.1);
+        var spriteSize = sprite.getContentSize();
+        sprite1.setPosition(cc.p(-spriteSize.width*0.1/2,-spriteSize.height*0.1/2));
+
+        var pauseItem = new cc.MenuItemSprite(sprite,sprite1,function () {
+            state = kGamePaused;
+            cc.audioEngine.playEffect(res.button_press_wav, false);
+            this.gameLayer.runAction(cc.moveTo(0.5,cc.p(-size.width,0)));
+        }, this);
+
+        var menu = new cc.Menu(pauseItem);
+        menu.x = size.width-45;
+        menu.y = size.height-40;
+        this.gameLayer.addChild(menu);
+
+
+
+        var sprite = new cc.Sprite(res.restartButton_png);
+        var sprite1 = new cc.Sprite(res.restartButton_png);
+        sprite1.setScale(1.1);
+        var spriteSize = sprite.getContentSize();
+        sprite1.setPosition(cc.p(-spriteSize.width*0.1/2,-spriteSize.height*0.1/2));
+
+        var resumeItem = new cc.MenuItemSprite(sprite,sprite1,function () {
+            state = kGaming;
+            cc.audioEngine.playEffect(res.button_press_wav, false);
+            this.gameLayer.runAction(cc.moveTo(0.5,cc.p(0,0)));
+        }, this);
+
+        var menu = new cc.Menu(resumeItem);
+        menu.x = size.width+size.width/2;
+        menu.y = size.height/2;
+        this.gameLayer.addChild(menu);
 
 
         cc.eventManager.addListener({
@@ -242,6 +280,7 @@ var GameSceneLayer = cc.Layer.extend({
 
     checkAnswer:function(value){
         this.playerAnswerValue = value;
+        cc.audioEngine.playEffect(res.button_press_wav, false);
         cc.log("check answer = " + value +" right = "+this.currentAnswer);
         if(this.currentAnswer == value)
         {
@@ -256,7 +295,7 @@ var GameSceneLayer = cc.Layer.extend({
             state = kGameEnded;
             this.answerLabel.setString(value);
             this.answerLabel.setColor(cc.color(255,0,0));
-            this.scheduleOnce(this.gameEnd, 2);
+            this.scheduleOnce(this.gameEnd, 1);
         }
     },
 
@@ -415,14 +454,10 @@ var GameSceneLayer = cc.Layer.extend({
 
     gameEnd:function(){
         state = kGameEnded;
-
-
         playerScore = this.level+1;
 
         if(playerScore>currentHighScore){
             currentHighScore = playerScore;
-            record.HightScore = currentHighScore;
-            cc.log("save0:"+record.HighScore+" - "+currentHighScore);
             this.saveRecord();
         }
         playerAnswer = this.lastQuestionStr + "= " + this.playerAnswerValue;
@@ -430,8 +465,6 @@ var GameSceneLayer = cc.Layer.extend({
         cc.director.runScene(new cc.TransitionSlideInT(1, new GameEndScene()));
     }
 });
-
-
 
 var GameScene = cc.Scene.extend({
     onEnter:function () {

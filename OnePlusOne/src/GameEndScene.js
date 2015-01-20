@@ -105,7 +105,7 @@ var GameEndSceneLayer = cc.Layer.extend({
         sprite1.setPosition(cc.p(-spriteSize.width*0.1/2,-spriteSize.height*0.1/2));
 
         var restartItem = new cc.MenuItemSprite(sprite,sprite1,function () {
-            //cc.audioEngine.playEffect(res.button_press_wav, false);
+            cc.audioEngine.playEffect(res.button_press_wav, false);
             cc.director.runScene(new cc.TransitionSlideInT(1, new GameScene()));
         }, this);
         restartItem.x = size.width/2;
