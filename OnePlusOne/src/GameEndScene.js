@@ -44,7 +44,7 @@ var GameEndSceneLayer = cc.Layer.extend({
 
 
         var headSprite = new cc.Sprite(res.man_png);
-        this.addChild(headSprite,10);
+        this.addChild(headSprite,6);
         headSprite.x = size.width / 2;
         headSprite.y = this.highScoreLabel.y-210;
         var move1 = cc.moveBy(0.3,cc.p(0,10));
@@ -120,7 +120,7 @@ var GameEndSceneLayer = cc.Layer.extend({
 
 
         this.shareUI = new ShareUI();
-        this.addChild(this.shareUI, 1);
+        this.addChild(this.shareUI, 200);
         this.shareUI.visible =false;
         return true;
     },
@@ -143,9 +143,9 @@ var ShareUI = cc.LayerColor.extend({
     ctor: function () {
         this._super(cc.color(0, 0, 0, 188), cc.winSize.width, cc.winSize.height);
 
-        var bg = new cc.Sprite(res.bg_jpg);
-        this.addChild(bg);
-        bg.setPosition(cc.winSize.width/2,cc.winSize.height/2);
+        //var bg = new cc.Sprite(res.share_jpg);
+        //this.addChild(bg);
+        //bg.setPosition(cc.winSize.width/2,cc.winSize.height/2);
     },
     onEnter: function () {
         this._super();

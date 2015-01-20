@@ -26,8 +26,8 @@ var GameSceneLayer = cc.Layer.extend({
     gameLayer:null,
     tileArray:null,
     numbersNum:2,
-    answerSpriteWidth:298,
-    answerSpriteHeight:78,
+    answerSpriteWidth:500,
+    answerSpriteHeight:90,
     answerSprites:null,
     rightSprite:null,
     lastQuestionStr:null,
@@ -60,10 +60,10 @@ var GameSceneLayer = cc.Layer.extend({
         // add the label as a child to this layer
         this.gameLayer.addChild(this.levelTipLabel, 5);
 
-        this.questionLabel = new cc.LabelTTF("1 + 2 = ", "Arial", 60);
+        this.questionLabel = new cc.LabelTTF("1 + 2 = ", "Arial", 70);
         // position the label on the center of the screen
-        this.questionLabel.x = size.width / 2-20;
-        this.questionLabel.y = size.height / 2+40;
+        this.questionLabel.x = size.width / 2-18;
+        this.questionLabel.y = size.height / 2+50;
         this.questionLabel.color = cc.color(0x00,0xa9,0xef);
         // add the label as a child to this layer
         this.gameLayer.addChild(this.questionLabel, 5);
@@ -284,6 +284,7 @@ var GameSceneLayer = cc.Layer.extend({
         cc.log("check answer = " + value +" right = "+this.currentAnswer);
         if(this.currentAnswer == value)
         {
+            cc.audioEngine.playEffect(res.win_wav, false);
             state = kGameReady;
             //show right_png
             this.rightSprite.setVisible(true);
@@ -293,6 +294,7 @@ var GameSceneLayer = cc.Layer.extend({
         }else{
             //wrong, game over
             state = kGameEnded;
+            cc.audioEngine.playEffect(res.failed_wav, false);
             this.answerLabel.setString(value);
             this.answerLabel.setColor(cc.color(255,0,0));
             this.scheduleOnce(this.gameEnd, 1);
@@ -303,7 +305,7 @@ var GameSceneLayer = cc.Layer.extend({
         this.level = value;
         this.levelTipLabel.setString((this.level+1));
         this.totalTime = 2.5;
-        if(this.level < 5) {
+        if(this.level < 6) {
             this.numbersNum = 2;
             if (this.level >= 3) {
                 var random = Math.floor(Math.random() * 10);
@@ -434,9 +436,9 @@ var GameSceneLayer = cc.Layer.extend({
 
             if(zhengshuIndex == i) continue;
             if(number < 0){
-                res += " - "+(-number)+" ";
+                res += " - "+(-number);
             }else{
-                res += " + " + number+" ";
+                res += " + " + number;
             }
         }
         if(this.lastQuestionStr == res){
@@ -445,7 +447,7 @@ var GameSceneLayer = cc.Layer.extend({
         }else
             this.lastQuestionStr = res;
         //cc.log("this.currentAnswer:"+this.currentAnswer);
-        this.questionLabel.setString(res+"= ");
+        this.questionLabel.setString(res+" = ");
 
         this.rightSprite.x = this.answerLabel.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
         this.answerLabel.setVisible(true);
