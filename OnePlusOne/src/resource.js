@@ -1,6 +1,6 @@
 var playerScore = 0;
 var playerAnswer = "";
-
+var currentHighScore = 0;
 
 
 var res = {

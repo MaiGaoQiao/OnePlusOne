@@ -12,7 +12,7 @@ var state = kGameReady;
 var numbersData = [1,2,3,-1,-2,-3];
 
 //这是一个保存娃娃数量的json数据
-dollNum = {Aries: 0, Taurus: 0, Gemini: 0, Cancer: 0, Leo: 0, Virgo: 0, Libra: 0, Scorpius: 0, Sagittarius: 0, Capricornus: 0, Aquarius: 0, Pisces: 0};
+record = {HighScore: 0};
 
 
 
@@ -110,6 +110,7 @@ var GameSceneLayer = cc.Layer.extend({
 
         this.setLevel(0);
         this.schedule(this.step,1/25);
+        this.loadRecord();
         return true;
     },
 
@@ -142,28 +143,34 @@ var GameSceneLayer = cc.Layer.extend({
     /**
      * 保存Doll数量，要保存json数据的时候，需要使用JSON.stringify();方法将JSON转化为字符串
      */
-    saveDollNum:function(){
-        var tempDollNum = JSON.stringify(dollNum);
-        cc.sys.localStorage.setItem("dollNum", tempDollNum);
+    saveRecord:function(){
+        cc.log("save:"+currentHighScore);
+        record = {HighScore: currentHighScore};
+        var tempDollNum = JSON.stringify(record);
+        cc.sys.localStorage.setItem("record", tempDollNum);
     },
-
 
     /**
     * 加载Doll数量 和 keys；然后再读取过后，需要用JSON.parse();方法将字符串转化为JSON
     */
-    loadDollNum:function() {
-    var tempDollNum = cc.sys.localStorage.getItem("dollNum");
+    loadRecord:function() {
+    var tempDollNum = cc.sys.localStorage.getItem("record");
 
 
     if(tempDollNum == null || tempDollNum == ""){
-        this.saveDollNum();
-        cc.log("default dollNum " + dollNum);
+        this.saveRecord();
+        tempDollNum = record;
+        cc.log("default dollNum " + record);
     }else{
-        tempDollNum = sys.localStorage.getItem("dollNum");
+        tempDollNum = cc.sys.localStorage.getItem("record");
         cc.log("get dollNum " + tempDollNum);
-    }
-        //将字符串转化为json
         tempDollNum = JSON.parse(tempDollNum);
+    }
+        currentHighScore = tempDollNum.HighScore;
+        cc.log("currentHighScore:"+currentHighScore);
+        return tempDollNum;
+        //将字符串转化为json
+        //var tempDollNum = JSON.parse(tempDollNum);
     },
 
     generateRandomQuestion:function(){
@@ -317,7 +324,6 @@ var GameSceneLayer = cc.Layer.extend({
         //    //TODO::showRoundLabelEffect
         //}
         this.setRound(this.round+1);
-
     },
 
     step:function(dt){
@@ -409,7 +415,16 @@ var GameSceneLayer = cc.Layer.extend({
 
     gameEnd:function(){
         state = kGameEnded;
+
+
         playerScore = this.level+1;
+
+        if(playerScore>currentHighScore){
+            currentHighScore = playerScore;
+            record.HightScore = currentHighScore;
+            cc.log("save0:"+record.HighScore+" - "+currentHighScore);
+            this.saveRecord();
+        }
         playerAnswer = this.lastQuestionStr + "= " + this.playerAnswerValue;
         this.unschedule(this.step);
         cc.director.runScene(new cc.TransitionSlideInT(1, new GameEndScene()));

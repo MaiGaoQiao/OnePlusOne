@@ -34,7 +34,7 @@ var GameEndSceneLayer = cc.Layer.extend({
         // add the label as a child to this layer
         this.addChild(this.scoreLabel, 5);
 
-        this.highScoreLabel = new cc.LabelTTF("最高记录：0", "Arial", 50);
+        this.highScoreLabel = new cc.LabelTTF("最高记录："+currentHighScore, "Arial", 50);
         // position the label on the center of the screen
         this.highScoreLabel.x = size.width / 2;
         this.highScoreLabel.y = helloLabel.y-150;
@@ -146,8 +146,6 @@ var ShareUI = cc.LayerColor.extend({
         var bg = new cc.Sprite(res.bg_jpg);
         this.addChild(bg);
         bg.setPosition(cc.winSize.width/2,cc.winSize.height/2);
-
-
     },
     onEnter: function () {
         this._super();
