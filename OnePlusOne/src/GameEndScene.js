@@ -2,10 +2,12 @@
  * Created by johnrunning on 14/12/16.
  */
 
+
 var GameEndSceneLayer = cc.Layer.extend({
     scoreLabel:null,
     highScoreLabel:null,
     playerAnswerLabel:null,
+
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -16,27 +18,26 @@ var GameEndSceneLayer = cc.Layer.extend({
         bgLayer.init(cc.color(0xFF,0xFF,0xFF,0xff),size.width,size.height);
         this.addChild(bgLayer);
 
-
         var helloLabel = new cc.LabelTTF("你的记录", "Arial", 38);
         // position the label on the center of the screen
         helloLabel.setColor(cc.color(0x8c,0x8c,0x8c));
         helloLabel.x = size.width / 2;
-        helloLabel.y = size.height-100;
+        helloLabel.y = size.height-60;
         // add the label as a child to this layer
         this.addChild(helloLabel);
 
-        this.scoreLabel = new cc.LabelTTF("0", "Arial", 60);
+        this.scoreLabel = new cc.LabelTTF(playerScore+"", "Arial", 100);
         // position the label on the center of the screen
         this.scoreLabel.x = size.width / 2;
-        this.scoreLabel.y = helloLabel.y-100;
+        this.scoreLabel.y = helloLabel.y-70;
         this.scoreLabel.color = cc.color(0x8e,0x8e,0x8c);
         // add the label as a child to this layer
         this.addChild(this.scoreLabel, 5);
 
-        this.highScoreLabel = new cc.LabelTTF("最高记录：0", "Arial", 60);
+        this.highScoreLabel = new cc.LabelTTF("最高记录：0", "Arial", 50);
         // position the label on the center of the screen
         this.highScoreLabel.x = size.width / 2;
-        this.highScoreLabel.y = helloLabel.y-100;
+        this.highScoreLabel.y = helloLabel.y-150;
         this.highScoreLabel.color = cc.color(0x8c,0x8c,0x8c);
         // add the label as a child to this layer
         this.addChild(this.highScoreLabel, 5);
@@ -45,28 +46,32 @@ var GameEndSceneLayer = cc.Layer.extend({
         var headSprite = new cc.Sprite(res.man_png);
         this.addChild(headSprite,10);
         headSprite.x = size.width / 2;
-        headSprite.y = this.highScoreLabel.y-200;
-
+        headSprite.y = this.highScoreLabel.y-210;
+        var move1 = cc.moveBy(0.3,cc.p(0,10));
+        var move2 = cc.moveBy(0.3,cc.p(0,-10))
+        headSprite.runAction(cc.repeatForever(cc.sequence(move1,move2)));
 
         var roundBg = new cc.Sprite(res.endframe_png);
-        this.addChild(roundBg,-1);
-        roundBg.x = size.width / 2;
-        roundBg.y = headSprite.y-100;
 
-        var helloLabel = new cc.LabelTTF("Oh my God!", "Arial", 38);
+        roundBg.x = size.width / 2;
+        roundBg.y = headSprite.y-200;
+        this.addChild(roundBg,1);
+
+
+        var helloLabel = new cc.LabelTTF("Oh my God!", "Arial", 24);
         // position the label on the center of the screen
-        helloLabel.setColor(cc.color(0x8c,0x8c,0x8c));
-        helloLabel.x = 0;
-        helloLabel.y = 30;
+        helloLabel.setColor(cc.color(0xFF,0xFF,0xFF));
+        helloLabel.x = 334/2;
+        helloLabel.y = 171/2+36;
         // add the label as a child to this layer
         roundBg.addChild(helloLabel,1);
 
 
-        this.playerAnswerLabel = new cc.LabelTTF("1 + 1 = 3?", "Arial", 38);
+        this.playerAnswerLabel = new cc.LabelTTF(playerAnswer, "Arial", 38);
         // position the label on the center of the screen
-        this.playerAnswerLabel.setColor(cc.color(0x8c,0x8c,0x8c));
-        this.playerAnswerLabel.x = 0;
-        this.playerAnswerLabel.y = 0;
+        this.playerAnswerLabel.setColor(cc.color(0xFF,0xFF,0xFF));
+        this.playerAnswerLabel.x = 334/2;
+        this.playerAnswerLabel.y = helloLabel.y-40;
         // add the label as a child to this layer
         roundBg.addChild(this.playerAnswerLabel,1);
 
@@ -91,6 +96,8 @@ var GameEndSceneLayer = cc.Layer.extend({
         shareItem.y = 100;
 
 
+
+
         var sprite = new cc.Sprite(res.restartButton_png);
         var sprite1 = new cc.Sprite(res.restartButton_png);
         sprite1.setScale(1.1);
@@ -102,7 +109,7 @@ var GameEndSceneLayer = cc.Layer.extend({
             cc.director.runScene(new cc.TransitionSlideInT(1, new GameScene()));
         }, this);
         restartItem.x = size.width/2;
-        restartItem.y = 200;
+        restartItem.y = 150;
 
         var menu = new cc.Menu(restartItem,shareItem);
         menu.x = 0;

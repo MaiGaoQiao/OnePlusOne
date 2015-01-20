@@ -1,3 +1,8 @@
+var playerScore = 0;
+var playerAnswer = "";
+
+
+
 var res = {
     home_jpg : "res/home.jpg",
     barFrame_png :"res/barFrame.png",
