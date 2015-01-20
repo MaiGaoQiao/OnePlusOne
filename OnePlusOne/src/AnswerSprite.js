@@ -25,7 +25,7 @@ var AnswerSprite = cc.Sprite.extend({
         // position the label on the center of the screen
         this.valueLabel.x = 0;
         this.valueLabel.y = 0;
-        this.valueLabel.setColor(cc.color(0,255,0));
+        this.valueLabel.setColor(cc.color(255,255,255));
         // add the label as a child to this layer
         this.addChild(this.valueLabel, 5);
         return true;

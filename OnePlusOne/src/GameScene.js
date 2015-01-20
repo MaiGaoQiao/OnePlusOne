@@ -11,6 +11,10 @@ var state = kGameReady;
 
 var numbersData = [1,2,3,-1,-2,-3];
 
+//这是一个保存娃娃数量的json数据
+dollNum = {Aries: 0, Taurus: 0, Gemini: 0, Cancer: 0, Leo: 0, Virgo: 0, Libra: 0, Scorpius: 0, Sagittarius: 0, Capricornus: 0, Aquarius: 0, Pisces: 0};
+
+
 
 var GameSceneLayer = cc.Layer.extend({
     levelTipLabel:null,
@@ -37,21 +41,20 @@ var GameSceneLayer = cc.Layer.extend({
         this.answerSprites = new Array();
 
         var bgLayer = new cc.LayerColor();
-        bgLayer.init(cc.color(0x7b,0x27,0xa1,0xff),size.width,size.height);
+        bgLayer.init(cc.color(0xFF,0xFF,0xFF,0xff),size.width,size.height);
         this.addChild(bgLayer);
 
-        //var bg = new cc.Sprite(res.home_jpg);//bg1_jpg
-        //bg.x = size.width/2;
-        //bg.y = size.height/2;
-        //bg.width = size.width;
-        //bg.height = size.height;
-        //this.addChild(bg);
+        var bg = new cc.Sprite(res.levelTipBg_png);//bg1_jpg
+        bg.x = 85;
+        bg.y = size.height-118/2;
+        this.addChild(bg);
 
 
         this.levelTipLabel = new cc.LabelTTF("0", "Arial", 60);
         // position the label on the center of the screen
-        this.levelTipLabel.x = size.width / 2;
-        this.levelTipLabel.y = size.height-40;
+        this.levelTipLabel.x = 85;
+        this.levelTipLabel.y = bg.y;
+        this.levelTipLabel.color = cc.color(0x4d,0x4d,0x4d);
         // add the label as a child to this layer
         this.addChild(this.levelTipLabel, 5);
 
@@ -59,7 +62,7 @@ var GameSceneLayer = cc.Layer.extend({
         // position the label on the center of the screen
         this.questionLabel.x = size.width / 2-20;
         this.questionLabel.y = size.height / 2+40;
-        this.questionLabel.color = cc.color(0,255,0);
+        this.questionLabel.color = cc.color(0x00,0xa9,0xef);
         // add the label as a child to this layer
         this.addChild(this.questionLabel, 5);
 
@@ -68,7 +71,7 @@ var GameSceneLayer = cc.Layer.extend({
         // position the label on the center of the screen
         this.answerLabel.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
         this.answerLabel.y = this.questionLabel.y;
-        this.answerLabel.color = cc.color(0,255,0);
+        this.answerLabel.color = cc.color(0x00,0xa9,0xef);
         // add the label as a child to this layer
         this.addChild(this.answerLabel, 5);
 
@@ -80,11 +83,11 @@ var GameSceneLayer = cc.Layer.extend({
 
         var answerSprite1 = new AnswerSprite(1);
         answerSprite1.x = size.width/2;
-        answerSprite1.y = 280;
+        answerSprite1.y = 300;
 
         var answerSprite2 = new AnswerSprite(2);
         answerSprite2.x = size.width/2;
-        answerSprite2.y = 180;
+        answerSprite2.y = 190;
 
         var answerSprite3 = new AnswerSprite(3);
         answerSprite3.x = size.width/2;
@@ -110,6 +113,7 @@ var GameSceneLayer = cc.Layer.extend({
     },
 
     onTouchBegan:function (touch, event) {
+        if(state != kGaming) return;
         var target = event.getCurrentTarget();
         var position = touch.getLocation();
         for(var i = 0; i < target.answerSprites.length; i++){
@@ -132,6 +136,33 @@ var GameSceneLayer = cc.Layer.extend({
     touchDelegateRetain:function () {
     },
     touchDelegateRelease:function () {
+    },
+
+    /**
+     * 保存Doll数量，要保存json数据的时候，需要使用JSON.stringify();方法将JSON转化为字符串
+     */
+    saveDollNum:function(){
+        var tempDollNum = JSON.stringify(dollNum);
+        cc.sys.localStorage.setItem("dollNum", tempDollNum);
+    },
+
+
+    /**
+    * 加载Doll数量 和 keys；然后再读取过后，需要用JSON.parse();方法将字符串转化为JSON
+    */
+    loadDollNum:function() {
+    var tempDollNum = cc.sys.localStorage.getItem("dollNum");
+
+
+    if(tempDollNum == null || tempDollNum == ""){
+        this.saveDollNum();
+        cc.log("default dollNum " + dollNum);
+    }else{
+        tempDollNum = sys.localStorage.getItem("dollNum");
+        cc.log("get dollNum " + tempDollNum);
+    }
+        //将字符串转化为json
+        tempDollNum = JSON.parse(tempDollNum);
     },
 
     generateRandomQuestion:function(){
@@ -205,6 +236,7 @@ var GameSceneLayer = cc.Layer.extend({
         cc.log("check answer = " + value +" right = "+this.currentAnswer);
         if(this.currentAnswer == value)
         {
+            state = kGameReady;
             //show right_png
             this.rightSprite.setVisible(true);
             this.answerLabel.setVisible(false);
@@ -222,6 +254,7 @@ var GameSceneLayer = cc.Layer.extend({
     setLevel:function(value){
         this.level = value;
         this.levelTipLabel.setString((this.level+1));
+        this.totalTime = 2.5;
         if(this.level < 5) {
             this.numbersNum = 2;
             if (this.level >= 3) {
@@ -229,17 +262,24 @@ var GameSceneLayer = cc.Layer.extend({
                 if (random < 3)
                 {
                     this.numbersNum = 3;
+                }else if (random >8)
+                {
+                    this.numbersNum = 4;
                 }
             }
-            this.totalTime = 4;
+
+            this.totalTime = 2.5;
         }else if(this.level < 10){
             this.numbersNum = 3;
             var random = Math.floor(Math.random() * 10);
             if (random < 3)
             {
                 this.numbersNum = 2;
+            }else if (random >8)
+            {
+                this.numbersNum = 4;
             }
-            this.totalTime = 3;
+            this.totalTime = 2;
         }else if(this.level < 20){
             this.numbersNum = 4;
             var random = Math.floor(Math.random() * 10);
@@ -247,7 +287,7 @@ var GameSceneLayer = cc.Layer.extend({
             {
                 this.numbersNum = 3;
             }
-            this.totalTime = 2.5;
+            this.totalTime = 1.5;
         }else{
             var random = Math.floor(Math.random() * 10);
             if (random >7)
@@ -255,7 +295,7 @@ var GameSceneLayer = cc.Layer.extend({
                 this.numbersNum = 4;
             }
             this.numbersNum = 5;
-            this.totalTime = 2;
+            this.totalTime = 1;
         }
         this.createNewGame();
         this.currentTime = this.totalTime;

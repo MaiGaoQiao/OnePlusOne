@@ -12,44 +12,35 @@ var IntroScene0Layer = cc.Layer.extend({
         this._super();
         var size = cc.winSize;
 
-        //var bgLayer = new cc.LayerColor();
-        //bgLayer.init(cc.color(0x7b,0x27,0xa1,0xff),size.width,size.height);
-        //this.addChild(bgLayer);
+        var bgLayer = new cc.LayerColor();
+        bgLayer.init(cc.color(0xFF,0xFF,0xFF,0xff),size.width,size.height);
+        this.addChild(bgLayer);
 
-        var bg = new cc.Sprite(res.home_jpg);//bg1_jpg
+        var bg = new cc.Sprite(res.homebg_png);//bg1_jpg
         bg.x = size.width/2;
-        bg.y = size.height/2;
-        bg.width = size.width;
-        bg.height = size.height;
+        bg.y = size.height-250;
         this.addChild(bg);
 
 
-        cc.eventManager.addListener({
-            event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            swallowTouches: true,
-            onTouchBegan: this.onTouchBegan,
-            onTouchMoved: this.onTouchMoved,
-            onTouchEnded: this.onTouchEnded
+        var sprite = new cc.Sprite(res.restartButton_png);
+        var sprite1 = new cc.Sprite(res.restartButton_png);
+        sprite1.setScale(1.1);
+        var spriteSize = sprite.getContentSize();
+        sprite1.setPosition(cc.p(-spriteSize.width*0.1/2,-spriteSize.height*0.1/2));
+
+        var playItem = new cc.MenuItemSprite(sprite,sprite1,function () {
+            cc.audioEngine.playEffect(res.button_press_wav, false);
+            cc.director.runScene(new cc.TransitionSlideInT(1, new GameScene()));
         }, this);
 
-        return true;
-    },
-    onTouchBegan:function (touch, event) {
-        var target = event.getCurrentTarget();
-        var position = touch.getLocation();
 
-        //cc.audioEngine.playEffect(res.button_press_wav, false);
 
-        cc.director.runScene(new cc.TransitionSlideInT(1, new GameScene()));
+        this.playMenu = new cc.Menu(playItem);
+        this.playMenu.x = size.width/2;
+        this.playMenu.y = 250;
+        this.addChild(this.playMenu, 1);
+
         return true;
-    },
-    onTouchMoved:function (touch, event) {
-    },
-    onTouchEnded:function (touch, event) {
-    },
-    touchDelegateRetain:function () {
-    },
-    touchDelegateRelease:function () {
     }
 });
 
