@@ -34,6 +34,7 @@ var GameSceneLayer = cc.Layer.extend({
     pastTime:null,
     playerAnswerValue:-1,
     currentQuestion:null,
+    currentQuestionLayer:null,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -61,36 +62,43 @@ var GameSceneLayer = cc.Layer.extend({
         // add the label as a child to this layer
         this.gameLayer.addChild(this.levelTipLabel, 5);
 
-        this.questionLabel = new cc.LabelTTF("1 + 2 = ", "Arial", 70);
-        // position the label on the center of the screen
-        this.questionLabel.x = size.width / 2-18;
-        this.questionLabel.y = size.height / 2+50;
-        this.questionLabel.color = cc.color(0x00,0xa9,0xef);
-        // add the label as a child to this layer
-        this.gameLayer.addChild(this.questionLabel, 5);
 
 
-        this.answerLabel = new cc.LabelTTF("?", "Arial", 60);
-        // position the label on the center of the screen
-        this.answerLabel.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
-        this.answerLabel.y = this.questionLabel.y;
-        this.answerLabel.color = cc.color(0x00,0xa9,0xef);
-        // add the label as a child to this layer
-        this.gameLayer.addChild(this.answerLabel, 5);
+        //this.currentQuestionLayer = new cc.Layer();
+        //this.gameLayer.addChild(this.currentQuestionLayer, 5);
+        //
+        //this.questionLabel = new cc.LabelTTF("1 + 2 = ", "Arial", 70);
+        //// position the label on the center of the screen
+        //this.questionLabel.x = size.width / 2-18;
+        //this.questionLabel.y = size.height / 2+50;
+        //this.questionLabel.color = cc.color(0x00,0xa9,0xef);
+        //// add the label as a child to this layer
+        //this.currentQuestionLayer.addChild(this.questionLabel, 5);
+        //
+        //
+        //this.answerLabel = new cc.LabelTTF("?", "Arial", 60);
+        //// position the label on the center of the screen
+        //this.answerLabel.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
+        //this.answerLabel.y = this.questionLabel.y;
+        //this.answerLabel.color = cc.color(0x00,0xa9,0xef);
+        //// add the label as a child to this layer
+        //this.currentQuestionLayer.addChild(this.answerLabel, 5);
+
+
 
         this.rightSprite = new cc.Sprite(res.right_png);
-        this.rightSprite.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
-        this.rightSprite.y = this.questionLabel.y;
-        this.gameLayer.addChild(this.rightSprite, 5);
+        //this.rightSprite.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
+        //this.rightSprite.y = this.questionLabel.y;
+        this.gameLayer.addChild(this.rightSprite, 6);
         this.rightSprite.setVisible(false);
 
         var answerSprite1 = new AnswerSprite(1);
         answerSprite1.x = size.width/2;
-        answerSprite1.y = 300;
+        answerSprite1.y = 340;
 
         var answerSprite2 = new AnswerSprite(2);
         answerSprite2.x = size.width/2;
-        answerSprite2.y = 190;
+        answerSprite2.y = 210;
 
         var answerSprite3 = new AnswerSprite(3);
         answerSprite3.x = size.width/2;
@@ -280,6 +288,8 @@ var GameSceneLayer = cc.Layer.extend({
     },
 
     checkAnswer:function(value){
+        this.rightSprite.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
+        this.rightSprite.y = this.questionLabel.y;
         this.playerAnswerValue = value;
         playerAnswer = this.playerAnswerValue;
         cc.audioEngine.playEffect(res.button_press_wav, false);
@@ -303,7 +313,34 @@ var GameSceneLayer = cc.Layer.extend({
         }
     },
 
+    moveInDone:function(sender){
+        state = kGaming;
+    },
+
     setLevel:function(value){
+        var size = cc.winSize;
+        this.currentQuestionLayer = new cc.Layer();
+        this.currentQuestionLayer.x = size.width;
+        this.gameLayer.addChild(this.currentQuestionLayer, 5);
+
+
+        this.questionLabel = new cc.LabelTTF("1 + 2 = ", "Arial", 80);
+        // position the label on the center of the screen
+        this.questionLabel.x = size.width / 2-18;
+        this.questionLabel.y = size.height / 2+50;
+        this.questionLabel.color = cc.color(0x00,0xa9,0xef);
+        // add the label as a child to this layer
+        this.currentQuestionLayer.addChild(this.questionLabel, 5);
+
+
+        this.answerLabel = new cc.LabelTTF("?", "Arial", 80);
+        // position the label on the center of the screen
+        this.answerLabel.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
+        this.answerLabel.y = this.questionLabel.y;
+        this.answerLabel.color = cc.color(0x00,0xa9,0xef);
+        // add the label as a child to this layer
+        this.currentQuestionLayer.addChild(this.answerLabel, 5);
+
         this.level = value;
         this.levelTipLabel.setString((this.level+1));
         this.totalTime = 2.5;
@@ -319,7 +356,6 @@ var GameSceneLayer = cc.Layer.extend({
                     this.numbersNum = 4;
                 }
             }
-
             this.totalTime = 2.5;
         }else if(this.level < 10){
             this.numbersNum = 3;
@@ -346,7 +382,7 @@ var GameSceneLayer = cc.Layer.extend({
             {
                 this.numbersNum = 4;
             }
-            this.numbersNum = 5;
+            this.numbersNum = 4;
             this.totalTime = 1;
         }
         this.createNewGame();
@@ -356,17 +392,27 @@ var GameSceneLayer = cc.Layer.extend({
             var sprite = this.answerSprites[i];
             sprite.setPercentage(100);
         }
-        state = kGaming;
+        this.currentQuestionLayer.runAction(cc.sequence(new cc.moveTo(0.3,cc.p(0,0)),new cc.callFunc(this.moveInDone,this.currentQuestionLayer)));
+        //state = kGaming;
 
         //this.itemLayer.runAction(cc.repeatForever(cc.blink(1,2)));
     },
 
     nextLevel:function(){
+        var size = cc.winSize;
+        var a = this.currentQuestionLayer;
+        var moveto = new cc.MoveTo(0.3,cc.p(-size.width,0));
+        var call = new cc.callFunc(this.moveLeftDone,a,this);
+        a.runAction(cc.sequence(moveto,call));
         this.setLevel(this.level+1);
         //if (showRoundLabelEffect) {
         //    //TODO::showRoundLabelEffect
         //}
         this.setRound(this.round+1);
+    },
+
+    moveLeftDone:function(sender,target){
+        sender.removeFromParent(true);
     },
 
     step:function(dt){
