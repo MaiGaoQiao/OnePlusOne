@@ -67,13 +67,21 @@ var GameEndSceneLayer = cc.Layer.extend({
         roundBg.addChild(helloLabel,1);
 
 
-        this.playerAnswerLabel = new cc.LabelTTF(playerAnswer, "Arial", 38);
+        this.playerAnswerLabel = new cc.LabelTTF(currentQuestion, "Arial", 38);
         // position the label on the center of the screen
         this.playerAnswerLabel.setColor(cc.color(0xFF,0xFF,0xFF));
         this.playerAnswerLabel.x = 334/2;
         this.playerAnswerLabel.y = helloLabel.y-40;
         // add the label as a child to this layer
         roundBg.addChild(this.playerAnswerLabel,1);
+
+        var label = new cc.LabelTTF(playerAnswer, "Arial", 38);
+        // position the label on the center of the screen
+        label.setColor(cc.color(0xFF,0x00,0x00));
+        label.x = this.playerAnswerLabel.x+this.playerAnswerLabel.getContentSize().width/2+10;
+        label.y = this.playerAnswerLabel.y;
+        // add the label as a child to this layer
+        roundBg.addChild(label,1);
 
         //var bg = new cc.Sprite(res.home_jpg);//bg1_jpg
         //bg.x = size.width/2;

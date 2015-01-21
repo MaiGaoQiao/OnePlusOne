@@ -33,6 +33,7 @@ var GameSceneLayer = cc.Layer.extend({
     lastQuestionStr:null,
     pastTime:null,
     playerAnswerValue:-1,
+    currentQuestion:null,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -280,6 +281,7 @@ var GameSceneLayer = cc.Layer.extend({
 
     checkAnswer:function(value){
         this.playerAnswerValue = value;
+        playerAnswer = this.playerAnswerValue;
         cc.audioEngine.playEffect(res.button_press_wav, false);
         cc.log("check answer = " + value +" right = "+this.currentAnswer);
         if(this.currentAnswer == value)
@@ -398,6 +400,7 @@ var GameSceneLayer = cc.Layer.extend({
     },
 
     timeUp:function(sender,s){
+        playerAnswer = "?";
         this.gameEnd();
     },
 
@@ -448,7 +451,7 @@ var GameSceneLayer = cc.Layer.extend({
             this.lastQuestionStr = res;
         //cc.log("this.currentAnswer:"+this.currentAnswer);
         this.questionLabel.setString(res+" = ");
-
+        currentQuestion = res+" = ";
         this.rightSprite.x = this.answerLabel.x = this.questionLabel.x + this.questionLabel.getContentSize().width/2+20;
         this.answerLabel.setVisible(true);
         this.rightSprite.setVisible(false);
@@ -462,7 +465,8 @@ var GameSceneLayer = cc.Layer.extend({
             currentHighScore = playerScore;
             this.saveRecord();
         }
-        playerAnswer = this.lastQuestionStr + "= " + this.playerAnswerValue;
+
+        //playerAnswer = this.lastQuestionStr + "= " + this.playerAnswerValue;
         this.unschedule(this.step);
         cc.director.runScene(new cc.TransitionSlideInT(1, new GameEndScene()));
     }
