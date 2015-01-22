@@ -129,22 +129,28 @@ var GameSceneLayer = cc.Layer.extend({
 
 
 
-        var sprite = new cc.Sprite(res.restartButton_png);
-        var sprite1 = new cc.Sprite(res.restartButton_png);
-        sprite1.setScale(1.1);
-        var spriteSize = sprite.getContentSize();
-        sprite1.setPosition(cc.p(-spriteSize.width*0.1/2,-spriteSize.height*0.1/2));
+        //var sprite = new cc.Sprite(res.restartButton_png);
+        //var sprite1 = new cc.Sprite(res.restartButton_png);
+        //sprite1.setScale(1.1);
+        //var spriteSize = sprite.getContentSize();
+        //sprite1.setPosition(cc.p(-spriteSize.width*0.1/2,-spriteSize.height*0.1/2));
+        //
+        //var resumeItem = new cc.MenuItemSprite(sprite,sprite1,function () {
+        //    state = kGaming;
+        //    cc.audioEngine.playEffect(res.button_press_wav, false);
+        //    this.gameLayer.runAction(cc.moveTo(0.5,cc.p(0,0)));
+        //}, this);
+        //
+        //var menu = new cc.Menu(resumeItem);
+        //menu.x = size.width+size.width/2;
+        //menu.y = size.height/2;
+        //this.gameLayer.addChild(menu);
 
-        var resumeItem = new cc.MenuItemSprite(sprite,sprite1,function () {
-            state = kGaming;
-            cc.audioEngine.playEffect(res.button_press_wav, false);
-            this.gameLayer.runAction(cc.moveTo(0.5,cc.p(0,0)));
-        }, this);
 
-        var menu = new cc.Menu(resumeItem);
-        menu.x = size.width+size.width/2;
-        menu.y = size.height/2;
-        this.gameLayer.addChild(menu);
+        var sprite = new cc.Sprite(res.pausebg_png);
+        sprite.x = size.width+size.width/2;
+        sprite.y = size.height/2;
+        this.gameLayer.addChild(sprite);
 
 
         cc.eventManager.addListener({
@@ -162,9 +168,16 @@ var GameSceneLayer = cc.Layer.extend({
     },
 
     onTouchBegan:function (touch, event) {
-        if(state != kGaming) return;
         var target = event.getCurrentTarget();
         var position = touch.getLocation();
+        if(state == kGamePaused){
+            cc.audioEngine.playEffect(res.button_press_wav, false);
+            target.gameLayer.runAction(cc.moveTo(0.5,cc.p(0,0)));
+            state = kGaming;
+            return;
+        }
+        if(state != kGaming) return;
+
         for(var i = 0; i < target.answerSprites.length; i++){
             var sprite = target.answerSprites[i];
 

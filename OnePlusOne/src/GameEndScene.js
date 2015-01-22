@@ -45,7 +45,7 @@ var GameEndSceneLayer = cc.Layer.extend({
 
         var headSprite = new cc.Sprite(res.man_png);
         this.addChild(headSprite,6);
-        headSprite.x = size.width / 2;
+        headSprite.x = size.width / 2+28;
         headSprite.y = this.highScoreLabel.y-210;
         var move1 = cc.moveBy(0.3,cc.p(0,10));
         var move2 = cc.moveBy(0.3,cc.p(0,-10))
@@ -58,7 +58,7 @@ var GameEndSceneLayer = cc.Layer.extend({
         this.addChild(roundBg,1);
 
 
-        var helloLabel = new cc.LabelTTF("Oh my God!", "Arial", 24);
+        var helloLabel = new cc.LabelTTF("你在开玩笑吗？", "Arial", 24);
         // position the label on the center of the screen
         helloLabel.setColor(cc.color(0xFF,0xFF,0xFF));
         helloLabel.x = 334/2;
@@ -70,7 +70,7 @@ var GameEndSceneLayer = cc.Layer.extend({
         this.playerAnswerLabel = new cc.LabelTTF(currentQuestion, "Arial", 38);
         // position the label on the center of the screen
         this.playerAnswerLabel.setColor(cc.color(0xFF,0xFF,0xFF));
-        this.playerAnswerLabel.x = 334/2;
+        this.playerAnswerLabel.x = 334/2-15;
         this.playerAnswerLabel.y = helloLabel.y-40;
         // add the label as a child to this layer
         roundBg.addChild(this.playerAnswerLabel,1);
@@ -119,7 +119,23 @@ var GameEndSceneLayer = cc.Layer.extend({
         restartItem.x = size.width/2;
         restartItem.y = 150;
 
-        var menu = new cc.Menu(restartItem,shareItem);
+
+
+        var sprite = new cc.Sprite(res.hongbao_png);
+        var sprite1 = new cc.Sprite(res.hongbao_png);
+        sprite1.setScale(1.1);
+        var spriteSize = sprite.getContentSize();
+        sprite1.setPosition(cc.p(-spriteSize.width*0.1/2,-spriteSize.height*0.1/2));
+
+        var hongbaoItem = new cc.MenuItemSprite(sprite,sprite1,function () {
+            cc.audioEngine.playEffect(res.button_press_wav, false);
+            window.location.href=urlstr;
+        }, this);
+        hongbaoItem.x = size.width - 100;
+        hongbaoItem.y = 100;
+        hongbaoItem.setVisible(gamemode==1);
+
+        var menu = new cc.Menu(restartItem,shareItem,hongbaoItem);
         menu.x = 0;
         menu.y = 0;
         this.addChild(menu);
@@ -151,9 +167,9 @@ var ShareUI = cc.LayerColor.extend({
     ctor: function () {
         this._super(cc.color(0, 0, 0, 188), cc.winSize.width, cc.winSize.height);
 
-        //var bg = new cc.Sprite(res.share_jpg);
-        //this.addChild(bg);
-        //bg.setPosition(cc.winSize.width/2,cc.winSize.height/2);
+        var bg = new cc.Sprite(res.share_jpg);
+        this.addChild(bg);
+        bg.setPosition(cc.winSize.width/2,cc.winSize.height/2);
     },
     onEnter: function () {
         this._super();

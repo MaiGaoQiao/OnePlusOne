@@ -5,12 +5,14 @@ var currentHighScore = 0;
 
 var res = {
     //home_jpg : "res/home.jpg",
-    //share_jpg : "res/sharebg.jpg",
+    share_jpg : "res/shareBg.png",
     barFrame_png :"res/barFrame.png",
     urineBar_jpg : "res/urineBar.png",
     man_png : "res/man.png",
     homebg_png : "res/homebg.png",
+    hongbao_png : "res/hongbao.png",
     pauseBt_png : "res/pauseBt.png",
+    pausebg_png : "res/pausebg.png",
     levelTipBg_png:"res/levelTipBg.png",
     //star0_png : "res/star0.png",
     //star1_png : "res/star1.png",
