@@ -18,6 +18,11 @@ var GameEndSceneLayer = cc.Layer.extend({
         bgLayer.init(cc.color(0xFF,0xFF,0xFF,0xff),size.width,size.height);
         this.addChild(bgLayer);
 
+        var bg = new cc.Sprite(res.gamebg_png);//bg1_jpg
+        bg.x = size.width/2;
+        bg.y = size.height/2;
+        this.addChild(bg);
+
         var helloLabel = new cc.LabelTTF("你的记录", "Arial", 38);
         // position the label on the center of the screen
         helloLabel.setColor(cc.color(0x8c,0x8c,0x8c));

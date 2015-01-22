@@ -4,7 +4,7 @@ var currentHighScore = 0;
 
 
 var res = {
-    //home_jpg : "res/home.jpg",
+    gamebg_png : "res/gamebg.png",
     share_jpg : "res/shareBg.png",
     barFrame_png :"res/barFrame.png",
     urineBar_jpg : "res/urineBar.png",

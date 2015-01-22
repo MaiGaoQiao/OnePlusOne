@@ -48,6 +48,16 @@ var GameSceneLayer = cc.Layer.extend({
         this.gameLayer.init(cc.color(0xFF,0xFF,0xFF,0xff),size.width*2,size.height);
         this.addChild(this.gameLayer);
 
+
+        var bg = new cc.Sprite(res.gamebg_png);//bg1_jpg
+        bg.x = size.width/2;
+        bg.y = size.height/2;
+        this.gameLayer.addChild(bg);
+        var bg = new cc.Sprite(res.gamebg_png);//bg1_jpg
+        bg.x = size.width+size.width/2;
+        bg.y = size.height/2;
+        this.gameLayer.addChild(bg);
+
         var bg = new cc.Sprite(res.levelTipBg_png);//bg1_jpg
         bg.x = 85;
         bg.y = size.height-118/2;
